@@ -1,3 +1,4 @@
+import comparisons as cmp
 import numpy as np
 from scipy import linalg
 import time
@@ -75,4 +76,22 @@ def getCornerEnt(Lx,Ly,Lz):
 #   os.rename(filename+".db", newfilename+".db")
 #   print file , "done"
 #     
-#   print "Free boson calculation complete" 
+#   print "Free boson calculation complete"
+
+def getRegionA(Lx,Ly,Lz,x0,y0,z0,fx,fy,fz):
+  regA = np.zeros( (Lx,Ly,Lz), dtype='bool' )
+  
+  for x in range(Lx):
+    for y in range(Ly):
+      for z in range(Lz):
+        if (fx(x,x0) and fy(y,y0) and fz(z,z0)):
+          regA[x,y,z] = True
+        #endif
+      #end for loop over z
+    #end for loop over y
+  # end for loop over x
+  
+  #if the size of region A is more than half of the lattice, swap regions A and B:
+  if( (regA==True).sum() > (Lx*Ly*Lz/2) ): regA = np.logical_not(regA)
+  
+  return regA
