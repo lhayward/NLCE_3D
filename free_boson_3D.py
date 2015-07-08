@@ -48,7 +48,7 @@ def getCornerEnt(Lx,Ly,Lz):
                          + getEntropy(Lx,Ly,Lz,getRegionA(Lx,Ly,Lz,x0,y0,z0,cmp.geq,cmp.lt, cmp.lt ),X,P)
                          + getEntropy(Lx,Ly,Lz,getRegionA(Lx,Ly,Lz,x0,y0,z0,cmp.lt, cmp.geq,cmp.lt ),X,P))
         #edges:
-        result += 1.0/4.0*(getEntropy(Lx,Ly,Lz,getRegionA(Lx,Ly,Lz,x0,y0,z0,cmp.geq,cmp.geq,cmp.any),X,P) 
+        result -= 1.0/4.0*(getEntropy(Lx,Ly,Lz,getRegionA(Lx,Ly,Lz,x0,y0,z0,cmp.geq,cmp.geq,cmp.any),X,P) 
                          + getEntropy(Lx,Ly,Lz,getRegionA(Lx,Ly,Lz,x0,y0,z0,cmp.lt, cmp.lt ,cmp.any),X,P) 
                          + getEntropy(Lx,Ly,Lz,getRegionA(Lx,Ly,Lz,x0,y0,z0,cmp.geq,cmp.any,cmp.geq),X,P)
                          + getEntropy(Lx,Ly,Lz,getRegionA(Lx,Ly,Lz,x0,y0,z0,cmp.lt ,cmp.any,cmp.lt ),X,P)
@@ -90,11 +90,6 @@ def getEntropy(Lx,Ly,Lz,regA,X,P):
   for j in range(0, NsA):
     if Ev[j] > 0.5:
       Sn += (Ev[j]+1./2) * np.log(abs(Ev[j]+1./2.))-(Ev[j]-1./2.)*np.log(abs(Ev[j]-1./2)) 
-  if (np.abs(Sn-0.574433)<0.00001):
-    print Sn
-    print Csquared
-    print np.linalg.eigvals(Csquared)
-    print
   return Sn
 #........................................END getEntropy........................................
 
