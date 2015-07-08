@@ -3,12 +3,12 @@ import numpy
 #import property_gen as pg
 
 def weight(m,n,w):
-  w_mxn_name = '%02d%02d'%(m,n)
+  w_clust_name = '%02d%02d'%(m,n)
   
-  # First term in weight of mxn is property of mxn
+  # First term in weight of clust is property of clust
   ### !!! WRITE CODE TO CALCULATE PROPERTY:
-  ### w[w_mxn_name] = pg.property(m,n,Lx,Ly,lattice)
-  w[w_mxn_name] = 0
+  ### w[w_clust_name] = pg.property(m,n,Lx,Ly,lattice)
+  w[w_clust_name] = 0
   
   wformula = "W%02d%02d=P%02d%02d"%(m,n,m,n)
   print wformula
@@ -25,9 +25,9 @@ def weight(m,n,w):
         wformula += "%+d*W%02d%02d"%(-coeff,x,y)
         
         ### !!! Write NLCE base case# 
-        ### w[w_mxn_name] -= coeff * w['%02d%02d'%(x,y)]
+        ### w[w_clust_name] -= coeff * w['%02d%02d'%(x,y)]
         
-  ###print w[w_mxn_name]
+  ###print w[w_clust_name]
   print wformula
   
   return w
