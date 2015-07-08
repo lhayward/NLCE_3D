@@ -21,10 +21,10 @@ w = {} # weights
 clusters = []
 
 for ord in range(order_min,order_max+1):
-  print "Order " + str(ord)
-  print order.clusters(ord)
   print
-  # for m,n in order.clusters(ord):
+  print "Order %02d" %ord
+  for Lx,Ly,Lz in order.clusters(ord):
+    print "%03d x %03d x %03d" %(Lx,Ly,Lz)
     # w = mxn_weight.weight(m,n,R,w) # performs cluster weight calculations
     
     # #Embedding factor (1 for squares, 2 for rectangles):
