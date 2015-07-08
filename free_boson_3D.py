@@ -47,22 +47,23 @@ def getCornerEnt(Lx,Ly,Lz):
   for x0 in range(1,Lx):
     for y0 in range(1,Ly):
       for z0 in range(1,Lz):
+        r0 = (x0,y0,z0)
         #corners:
-        result += 1.0/4.0*(getEntropy(L,getRegionA(L,x0,y0,z0,cmp.geq,cmp.geq,cmp.geq),X,P) 
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.lt, cmp.lt, cmp.geq),X,P) 
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.geq,cmp.lt, cmp.lt ),X,P)
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.lt, cmp.geq,cmp.lt ),X,P))
+        result += 1.0/4.0*(getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.geq),X,P) 
+                         + getEntropy(L,getRegionA(L,r0,cmp.lt, cmp.lt, cmp.geq),X,P) 
+                         + getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.lt, cmp.lt ),X,P)
+                         + getEntropy(L,getRegionA(L,r0,cmp.lt, cmp.geq,cmp.lt ),X,P))
         #edges:
-        result -= 1.0/4.0*(getEntropy(L,getRegionA(L,x0,y0,z0,cmp.geq,cmp.geq,cmp.any),X,P) 
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.lt, cmp.lt ,cmp.any),X,P) 
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.geq,cmp.any,cmp.geq),X,P)
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.lt ,cmp.any,cmp.lt ),X,P)
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.any,cmp.geq,cmp.geq),X,P)
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.any,cmp.lt ,cmp.lt ),X,P))
+        result -= 1.0/4.0*(getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.any),X,P) 
+                         + getEntropy(L,getRegionA(L,r0,cmp.lt, cmp.lt ,cmp.any),X,P) 
+                         + getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.any,cmp.geq),X,P)
+                         + getEntropy(L,getRegionA(L,r0,cmp.lt ,cmp.any,cmp.lt ),X,P)
+                         + getEntropy(L,getRegionA(L,r0,cmp.any,cmp.geq,cmp.geq),X,P)
+                         + getEntropy(L,getRegionA(L,r0,cmp.any,cmp.lt ,cmp.lt ),X,P))
         #planes:
-        result += 1.0/4.0*(getEntropy(L,getRegionA(L,x0,y0,z0,cmp.geq,cmp.any,cmp.any),X,P) 
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.any,cmp.geq,cmp.any),X,P) 
-                         + getEntropy(L,getRegionA(L,x0,y0,z0,cmp.any,cmp.any,cmp.geq),X,P))
+        result += 1.0/4.0*(getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.any,cmp.any),X,P) 
+                         + getEntropy(L,getRegionA(L,r0,cmp.any,cmp.geq,cmp.any),X,P) 
+                         + getEntropy(L,getRegionA(L,r0,cmp.any,cmp.any,cmp.geq),X,P))
       #loop over z0
     #loop over y0
   #loop over x0
@@ -104,7 +105,7 @@ def getEntropy((Lx,Ly,Lz),regA,X,P):
 ###############################################################################################
 ########################################  getRegionA  #########################################
 ###############################################################################################
-def getRegionA((Lx,Ly,Lz),x0,y0,z0,fx,fy,fz):
+def getRegionA((Lx,Ly,Lz),(x0,y0,z0),fx,fy,fz):
   regA = np.zeros( (Lx,Ly,Lz), dtype='bool' )
   
   for x in range(Lx):
