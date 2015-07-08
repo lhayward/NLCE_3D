@@ -1,6 +1,4 @@
-import numpy
-import dbm
-#import mxn_getdata
+#import numpy as np
 import mxn_order
 import mxn_weight
 
@@ -24,7 +22,7 @@ for ord in range(order_min,order_max+1):
   print
   print "Order %02d" %ord
   for Lx,Ly,Lz in order.clusters(ord):
-    print "%03d x %03d x %03d" %(Lx,Ly,Lz)
+    print "%02d x %02d x %02d" %(Lx,Ly,Lz)
     # w = mxn_weight.weight(m,n,R,w) # performs cluster weight calculations
     
     # #Embedding factor (1 for squares, 2 for rectangles):

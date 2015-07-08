@@ -1,12 +1,8 @@
 import comparisons as cmp
 import numpy as np
-from scipy import linalg
-import time
-#import dbm
-import math
-import glob
-start_time = time.time()
-import os
+#from scipy import linalg
+#import time
+#start_time = time.time()
 
 ###############################################################################################
 #######################################  getCornerEnt  ########################################

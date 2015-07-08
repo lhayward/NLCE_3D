@@ -1,16 +1,16 @@
 import numpy
-import scipy as sp
+#import scipy as sp
 #import property_gen as pg
 
 def weight(m,n,w):
-  w_mxn_name = '%03d%03d'%(m,n)
+  w_mxn_name = '%02d%02d'%(m,n)
   
   # First term in weight of mxn is property of mxn
   ### !!! WRITE CODE TO CALCULATE PROPERTY:
   ### w[w_mxn_name] = pg.property(m,n,Lx,Ly,lattice)
   w[w_mxn_name] = 0
   
-  wformula = "W%03d%03d=P%03d%03d"%(m,n,m,n)
+  wformula = "W%02d%02d=P%02d%02d"%(m,n,m,n)
   print wformula
   print
   
@@ -22,10 +22,10 @@ def weight(m,n,w):
         if x > n or x==y: coeff = (m-x+1)*(n-y+1)
         else: coeff = (m-x+1)*(n-y+1)+(m-y+1)*(n-x+1)
         
-        wformula += "%+d*W%03d%03d"%(-coeff,x,y)
+        wformula += "%+d*W%02d%02d"%(-coeff,x,y)
         
         ### !!! Write NLCE base case# 
-        ### w[w_mxn_name] -= coeff * w['%03d%03d'%(x,y)]
+        ### w[w_mxn_name] -= coeff * w['%02d%02d'%(x,y)]
         
   ###print w[w_mxn_name]
   print wformula
