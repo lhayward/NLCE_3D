@@ -1,33 +1,37 @@
 import numpy
+import free_boson_3D
 #import scipy as sp
 #import property_gen as pg
 
-def weight(m,n,w):
-  w_clust_name = '%02d%02d'%(m,n)
+def weight(Lx,Ly,Lz,w):
+  w_clust_name = clust_name(Lx,Ly,Lz)
   
-  # First term in weight of clust is property of clust
-  ### !!! WRITE CODE TO CALCULATE PROPERTY:
-  ### w[w_clust_name] = pg.property(m,n,Lx,Ly,lattice)
-  w[w_clust_name] = 0
+  # First term in weight of this cluster is the property of the cluster:
+  w[w_clust_name] = free_boson_3D.getCornerEnt(Lx,Ly,Lz)
   
-  wformula = "W%02d%02d=P%02d%02d"%(m,n,m,n)
-  print wformula
-  print
+  wformula = "W(" + clust_name(Lx,Ly,Lz) + ") = P(" + clust_name(Lx,Ly,Lz) + ")"
+  #print wformula
   
-  for y in range (1,n+1):
-    for x in range (y,m+1):
-      if (y < n or x < m) and x > 1:
-        print wformula
+  # Subtract weights of all subclusters:
+  for x in range(1, Lx+1):
+    for y in range(1, Ly+1):
+      for z in range(1, Lz+1):
+        # Check that we are not at the Lx x Ly x Lz cluster, and also check that we are not at
+        # the 1 x 1 x 1 cluster (both of these cases don't contribute:
+        if (x!=Lx or y!=Ly or z!=Lz) and max(x,y,z)>1:
         
-        if x > n or x==y: coeff = (m-x+1)*(n-y+1)
-        else: coeff = (m-x+1)*(n-y+1)+(m-y+1)*(n-x+1)
-        
-        wformula += "%+d*W%02d%02d"%(-coeff,x,y)
-        
-        ### !!! Write NLCE base case# 
-        ### w[w_clust_name] -= coeff * w['%02d%02d'%(x,y)]
-        
-  ###print w[w_clust_name]
-  print wformula
+          coeff = (Lx-x+1)*(Ly-y+1)*(Lz-z+1)
+          
+          #weight is stored such that x<=y<=z, so sort the current x,y,z
+          [xs,ys,zs] = sorted([x,y,z])
+          
+          wformula += "+ %d*W("%(-coeff) + clust_name(xs,ys,zs) + ")"
+          w[w_clust_name] -= coeff * w[clust_name(xs,ys,zs)]
+          
+  #print wformula
+  #print
   
   return w
+  
+def clust_name(Lx,Ly,Lz):
+  return "%02dx%02dx%02d"%(Lx,Ly,Lz)
