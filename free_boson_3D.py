@@ -7,7 +7,7 @@ import numpy as np
 ###############################################################################################
 #######################################  getCornerEnt  ########################################
 ###############################################################################################
-def getCornerEnt(Lx,Ly,Lz):
+def getCornerEnt(Lx,Ly,Lz,alpha):
   perx = pery = perz = False  #PBC or not along the x, y and z directions
   massterm = 0
   
@@ -38,28 +38,29 @@ def getCornerEnt(Lx,Ly,Lz):
   P = 1./2. * np.matrix(Evec) * np.matrix(np.diag(np.sqrt(Eval))) * np.matrix(Evec.T)
   X = 1./2. * np.matrix(Evec) * np.matrix(np.diag(1. / np.sqrt(Eval))) * np.matrix(Evec.T)
   
-  result=0
+  #result=0
+  result = np.zeros(len(alpha))
   #loop over all possible locations of the corner:
   for x0 in range(1,Lx):
     for y0 in range(1,Ly):
       for z0 in range(1,Lz):
         r0 = (x0,y0,z0)
         #corners:
-        result += 1.0/4.0*(getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.geq),X,P) 
-                         + getEntropy(L,getRegionA(L,r0,cmp.lt, cmp.lt, cmp.geq),X,P) 
-                         + getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.lt, cmp.lt ),X,P)
-                         + getEntropy(L,getRegionA(L,r0,cmp.lt, cmp.geq,cmp.lt ),X,P))
+        result += 1.0/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.geq),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.lt, cmp.geq),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.lt, cmp.lt ),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.geq,cmp.lt ),X,P))
         #edges:
-        result -= 1.0/4.0*(getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.any),X,P) 
-                         + getEntropy(L,getRegionA(L,r0,cmp.lt, cmp.lt ,cmp.any),X,P) 
-                         + getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.any,cmp.geq),X,P)
-                         + getEntropy(L,getRegionA(L,r0,cmp.lt ,cmp.any,cmp.lt ),X,P)
-                         + getEntropy(L,getRegionA(L,r0,cmp.any,cmp.geq,cmp.geq),X,P)
-                         + getEntropy(L,getRegionA(L,r0,cmp.any,cmp.lt ,cmp.lt ),X,P))
+        result -= 1.0/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.any),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.lt ,cmp.any),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.geq),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt ,cmp.any,cmp.lt ),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.geq),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.lt ,cmp.lt ),X,P))
         #planes:
-        result += 1.0/4.0*(getEntropy(L,getRegionA(L,r0,cmp.geq,cmp.any,cmp.any),X,P) 
-                         + getEntropy(L,getRegionA(L,r0,cmp.any,cmp.geq,cmp.any),X,P) 
-                         + getEntropy(L,getRegionA(L,r0,cmp.any,cmp.any,cmp.geq),X,P))
+        result += 1.0/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.any),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.any),X,P)
+                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.any,cmp.geq),X,P))
       #loop over z0
     #loop over y0
   #loop over x0
@@ -69,7 +70,7 @@ def getCornerEnt(Lx,Ly,Lz):
 ###############################################################################################
 ########################################  getEntropy  #########################################
 ###############################################################################################
-def getEntropy((Lx,Ly,Lz),regA,X,P):
+def getEntropy((Lx,Ly,Lz),alpha,regA,X,P):
   sitesA = []
   for x in range(Lx):
     for y in range(Ly):
@@ -91,10 +92,18 @@ def getEntropy((Lx,Ly,Lz),regA,X,P):
   Ev = np.sqrt(np.linalg.eigvals(Csquared))
   #print np.linalg.eigvals(Csquared)
   #print
-  Sn = 0. 
+  #Sn = 0. 
+  Sn = np.zeros(len(alpha))
   for j in range(0, NsA):
-    if Ev[j] > 0.5:
-      Sn += (Ev[j]+1./2) * np.log(abs(Ev[j]+1./2.))-(Ev[j]-1./2.)*np.log(abs(Ev[j]-1./2)) 
+    #if Ev[j] > 0.5:
+    if Ev[j].real > 0.5:
+      for i,n in enumerate(alpha):
+        if n == 1:
+          Sn[i] += (Ev[j]+1./2) * np.log(abs(Ev[j]+1./2.))-(Ev[j]-1./2.)*np.log(abs(Ev[j]-1./2))
+        else:
+          Sn[i] += 1.0/(n-1.0) * np.log( (Ev[j]+1./2)**n - (Ev[j]-1./2.)**n )
+    #else:
+    #  print Ev[j]
   return Sn
 #........................................END getEntropy........................................
 

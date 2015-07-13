@@ -3,11 +3,11 @@ import free_boson_3D
 #import scipy as sp
 #import property_gen as pg
 
-def weight(Lx,Ly,Lz,w):
+def weight(Lx,Ly,Lz,w,alpha):
   w_clust_name = clust_name(Lx,Ly,Lz)
   
   # First term in weight of this cluster is the property of the cluster:
-  w[w_clust_name] = free_boson_3D.getCornerEnt(Lx,Ly,Lz)
+  w[w_clust_name] = free_boson_3D.getCornerEnt(Lx,Ly,Lz,alpha)
   
   wformula = "W(" + clust_name(Lx,Ly,Lz) + ") = P(" + clust_name(Lx,Ly,Lz) + ")"
   #print wformula
