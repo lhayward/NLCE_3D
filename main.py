@@ -1,12 +1,13 @@
 #import numpy as np
 import clust_order
 import clust_weight
+import sys  #for sys.stdout.flush()
 
 #############################
 # User settings
 
 order_min = 2
-order_max = 7
+order_max = 4
 order = clust_order.Max()
 #############################
 
@@ -24,6 +25,7 @@ for ord in range(order_min,order_max+1):
   for Lx,Ly,Lz in order.clusters(ord):
     curr_clust_name = clust_weight.clust_name(Lx,Ly,Lz)
     print "  " + curr_clust_name
+    sys.stdout.flush()
     
     w = clust_weight.weight(Lx,Ly,Lz,w) # performs cluster weight calculations
     
@@ -36,6 +38,7 @@ for ord in range(order_min,order_max+1):
     
   # Save result to file
   f.write("%d %.15f"%(ord,total)+'\n')
+  f.flush()
 
 f.close()
 print "\nOrder done: ",str(order_max)

@@ -40,3 +40,6 @@ class Max:
       for y in range(x,N+1):
         result.append((x,y,z))
     return result
+  
+  def name(self):
+    return "max"

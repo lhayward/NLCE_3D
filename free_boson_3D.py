@@ -9,7 +9,7 @@ import numpy as np
 ###############################################################################################
 def getCornerEnt(Lx,Ly,Lz):
   perx = pery = perz = False  #PBC or not along the x, y and z directions
-  massterm = 1
+  massterm = 0
   
   Ns = Lx * Ly * Lz
   L  = (Lx,Ly,Lz)
