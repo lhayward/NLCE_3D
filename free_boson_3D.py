@@ -7,9 +7,8 @@ import numpy as np
 ###############################################################################################
 #######################################  getCornerEnt  ########################################
 ###############################################################################################
-def getCornerEnt(Lx,Ly,Lz,alpha):
+def getCornerEnt(Lx,Ly,Lz,alpha,massterm):
   perx = pery = perz = False  #PBC or not along the x, y and z directions
-  massterm = 0
   
   Ns = Lx * Ly * Lz
   L  = (Lx,Ly,Lz)
@@ -99,7 +98,7 @@ def getEntropy((Lx,Ly,Lz),alpha,regA,X,P):
     if Ev[j].real > 0.5:
       for i,n in enumerate(alpha):
         if n == 1:
-          Sn[i] += (Ev[j]+1./2) * np.log(abs(Ev[j]+1./2.))-(Ev[j]-1./2.)*np.log(abs(Ev[j]-1./2))
+          Sn[i] += (Ev[j]+1./2)*np.log(abs(Ev[j]+1./2.)) - (Ev[j]-1./2.)*np.log(abs(Ev[j]-1./2))
         else:
           Sn[i] += 1.0/(n-1.0) * np.log( (Ev[j]+1./2)**n - (Ev[j]-1./2.)**n )
     #else:

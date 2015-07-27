@@ -2,6 +2,7 @@ import clust_order
 import clust_weight
 import numpy as np
 import sys  #for sys.stdout.flush()
+import time
 
 def decimalStr(num):
   res = str(num)
@@ -15,13 +16,17 @@ def decimalStr(num):
 # User settings
 
 order_min = 2
-order_max = 6
+order_max = 4
 order = clust_order.Max()
+massterm = 0
 #############################
+
+t1 = time.clock()
 
 w = {} # weights
 clusters = []
-alpha=np.linspace(0.5,3,26)
+#alpha=np.array( np.linspace(0.4,10,49).tolist() + [20,50,100,200,500,1000] )
+alpha = np.array( [0.5, 1, 2])
 total = np.zeros(len(alpha))
 
 f=[0 for i in alpha]
@@ -37,7 +42,7 @@ for ord in range(order_min,order_max+1):
     print "  " + curr_clust_name
     sys.stdout.flush()
     
-    w = clust_weight.weight(Lx,Ly,Lz,w,alpha) # performs cluster weight calculations
+    w = clust_weight.weight(Lx,Ly,Lz,w,alpha,massterm) # performs cluster weight calculations
     #Embedding factor:
     ef = 6
     if Lx==Ly and Ly==Lz: ef = 1
@@ -54,3 +59,6 @@ for ff in f:
   ff.close()
 print "\nOrder done: ",str(order_max)
 print
+
+t2 = time.clock()
+print "Total time: " + str(t2-t1) + " sec."
