@@ -74,7 +74,7 @@ def readWeights(alpha, massterm):
 # User settings
 
 order_min = 2
-order_max = 5
+order_max = 4
 order = clust_order.Max()
 massterm = 0.0
 #############################
@@ -82,8 +82,8 @@ massterm = 0.0
 t1 = time.clock()
 
 clusters = []
-#alpha=np.array( np.linspace(0.4,10,49).tolist() + [20,50,100,200,500,1000] )
-alpha = np.array( [0.5, 1, 2])
+alpha=np.array( np.linspace(0.4,10,49).tolist() + [20,50,100,200,500,1000] )
+#alpha = np.array( [0.5, 1, 2])
 total = np.zeros(len(alpha))
 w = readWeights(alpha,massterm) #try to read in weights (if there are any stored)
 print "\nInitial weights:"
@@ -128,7 +128,7 @@ for ord in range(order_min,order_max+1):
     
     #Write the new weight to file:
     fout_w.write(curr_clust_name + ": [ ")
-    for n in alpha:
+    for n in range(len(alpha)):
       fout_w.write("%.20e\t" %w[curr_clust_name][n])
     fout_w.write(" ]\n")
     fout_w.flush()
