@@ -7,6 +7,7 @@ def weight(Lx,Ly,Lz,w,alpha,massterm):
   w_clust_name = clust_name(Lx,Ly,Lz)
   
   if w_clust_name not in w:
+    print "    Must call free boson solver"
     #First term in weight of this cluster is the property of the cluster:
     w[w_clust_name] = free_boson_3D.getCornerEnt(Lx,Ly,Lz,alpha,massterm)
   
@@ -32,6 +33,8 @@ def weight(Lx,Ly,Lz,w,alpha,massterm):
     #print wformula
     #print
   #end if
+  else:
+    print "    Calculated previously"
   
   return w
   
