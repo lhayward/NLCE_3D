@@ -5,6 +5,8 @@ import os.path  #to check if file exists
 import sys  #for sys.stdout.flush()
 import time
 
+alphaEqTol=1e-10
+
 def arrayEq(a1, a2):
   eq = True
   
@@ -12,8 +14,11 @@ def arrayEq(a1, a2):
     eq = False
   else:
     for elem1, elem2 in zip(a1, a2):
-      if elem1 != elem2:
+      #if elem1 != elem2:
+      #Check if the alpha values are equal (within tolerance):
+      if abs(elem1-elem2) > alphaEqTol:
         eq = False
+        print "%.20f neq %.20f" %(elem1,elem2)
   #end if-else
   
   return eq
@@ -87,7 +92,8 @@ alpha=np.array( np.linspace(0.4,10,49).tolist() + [20,50,100,200,500,1000] )
 total = np.zeros(len(alpha))
 w = readWeights(alpha,massterm) #try to read in weights (if there are any stored)
 print "\nInitial weights:"
-print w
+print [key for key in w]
+#print w
 
 #Save the weights to file:
 filename = "weights_mass" + decimalStr(massterm) + ".txt"
@@ -100,8 +106,8 @@ fout_w.write(" ]\n\n")
 #Write the existing weights:
 for key in w:
   fout_w.write(key + ": [ ")
-  for n in alpha:
-    fout_w.write("%.20e\t" %w[key][n])
+  for i in range(len(alpha)):
+    fout_w.write("%.20e\t" %w[key][i])
   fout_w.write(" ]\n")
 fout_w.flush()
 
@@ -128,8 +134,8 @@ for ord in range(order_min,order_max+1):
     
     #Write the new weight to file:
     fout_w.write(curr_clust_name + ": [ ")
-    for n in range(len(alpha)):
-      fout_w.write("%.20e\t" %w[curr_clust_name][n])
+    for i in range(len(alpha)):
+      fout_w.write("%.20e\t" %w[curr_clust_name][i])
     fout_w.write(" ]\n")
     fout_w.flush()
     
@@ -147,13 +153,14 @@ for fout in fout_res:
 fout_w.close()
 
 print "\nFinal weights:"
-print w
+print [key for key in w]
+#print w
 
 #Write the weights:
 #for key in w:
 #  fout_w.write(key + ": [ ")
-#  for n in alpha:
-#    fout_w.write("%.20e\t" %w[key][n])
+#  for i in range(len(alpha)):
+#    fout_w.write("%.20e\t" %w[key][i])
 #  fout_w.write(" ]\n")
 
 print "\nOrder done: ",str(order_max)
