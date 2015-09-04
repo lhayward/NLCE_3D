@@ -4,6 +4,8 @@ import numpy as np
 #import time
 #start_time = time.time()
 
+#Ev_tol = 10e-16
+
 ###############################################################################################
 #######################################  getCornerEnt  ########################################
 ###############################################################################################
@@ -32,6 +34,7 @@ def getCornerEnt(Lx,Ly,Lz,alpha,massterm):
           K[site(L,x,y,zp), site(L,x,y,z )] = -1.0
           K[site(L,x,y,z ), site(L,x,y,zp)] = -1.0
   
+  #use eigh because we know the matrix is symmetric
   Eval,Evec = np.linalg.eigh(K) #, b=None, left=False, right=True, overwrite_a=False, overwrite_b=False, check_finite=True)
   #print Evec
   P = 1./2. * np.matrix(Evec) * np.matrix(np.diag(np.sqrt(Eval))) * np.matrix(Evec.T)
@@ -70,39 +73,52 @@ def getCornerEnt(Lx,Ly,Lz,alpha,massterm):
 ########################################  getEntropy  #########################################
 ###############################################################################################
 def getEntropy((Lx,Ly,Lz),alpha,regA,X,P):
-  sitesA = []
-  for x in range(Lx):
-    for y in range(Ly):
-      for z in range(Lz):
-        if regA[x,y,z] == True: sitesA.append(site((Lx,Ly,Lz),x,y,z))
-  NsA=len(sitesA)
-  Pred = np.zeros((NsA, NsA))
-  Xred = np.zeros((NsA, NsA))
+#   sitesA = []
+#   for x in range(Lx):
+#     for y in range(Ly):
+#       for z in range(Lz):
+#         if regA[x,y,z] == True: sitesA.append(site((Lx,Ly,Lz),x,y,z))
+#   NsA=len(sitesA)
+#   Pred = np.zeros((NsA, NsA))
+#   Xred = np.zeros((NsA, NsA))
+#   
+#   # ............ Following step differs from Mathematica ...........
+#   #Get X and P for sites inside A only:
+#   for a in range(0, NsA):
+#     for b in range(0, NsA):
+#       Pred[a,b] = P[sitesA[a] , sitesA[b]]
+#       Xred[a,b] = X[sitesA[a] , sitesA[b]]
+#   #....end of the step .......
+
+  sitesA = [i for i in range(len(regA)) if regA[i]]   
+  Pred = P[sitesA][:,sitesA]
+  Xred = X[sitesA][:,sitesA]
   
-  # ............ Following step differs from Mathematica ...........
-  #Get X and P for sites inside A only:
-  for a in range(0, NsA):
-    for b in range(0, NsA):
-      Pred[a,b] = P[sitesA[a] , sitesA[b]]
-      Xred[a,b] = X[sitesA[a] , sitesA[b]]
-  #....end of the step .......
+  #Csquared = Xred.dot(Pred)
+  #Csquared = (Xred.T).dot(Pred)
+  Csquared = np.matrix(Xred)*np.matrix(Pred)
   
-  Csquared = (Xred.T).dot(Pred)
   Ev = np.sqrt(np.linalg.eigvals(Csquared))
-  #print np.linalg.eigvals(Csquared)
-  #print
+  
+#   Sn = np.zeros(len(alpha))  
+#   for j in range(0, NsA):
+#     #if Ev[j] > 0.5:
+#     if Ev[j].real > 0.5:
+#       for i,n in enumerate(alpha):
+#         if n == 1:
+#           Sn[i] += (Ev[j]+1./2)*np.log(abs(Ev[j]+1./2.)) - (Ev[j]-1./2.)*np.log(abs(Ev[j]-1./2))
+#         else:
+#           Sn[i] += 1.0/(n-1.0) * np.log( (Ev[j]+1./2)**n - (Ev[j]-1./2.)**n )
+
   #Sn = 0. 
   Sn = np.zeros(len(alpha))
-  for j in range(0, NsA):
-    #if Ev[j] > 0.5:
-    if Ev[j].real > 0.5:
-      for i,n in enumerate(alpha):
-        if n == 1:
-          Sn[i] += (Ev[j]+1./2)*np.log(abs(Ev[j]+1./2.)) - (Ev[j]-1./2.)*np.log(abs(Ev[j]-1./2))
-        else:
-          Sn[i] += 1.0/(n-1.0) * np.log( (Ev[j]+1./2)**n - (Ev[j]-1./2.)**n )
-    #else:
-    #  print Ev[j]
+  Ev_new = np.array([e.real for e in Ev if (e.real - 1./2.)>0])
+  for i,n in enumerate(alpha):
+    if n == 1:
+      Sn[i] = np.sum( (Ev_new+1./2)*np.log(Ev_new+1./2.) - (Ev_new-1./2.)*np.log(Ev_new-1./2) )
+    else:
+      Sn[i] = 1.0/(n-1.0)*np.sum( np.log( (Ev_new+1./2)**n - (Ev_new-1./2.)**n ) )
+  
   return Sn
 #........................................END getEntropy........................................
 
@@ -110,20 +126,35 @@ def getEntropy((Lx,Ly,Lz),alpha,regA,X,P):
 ########################################  getRegionA  #########################################
 ###############################################################################################
 def getRegionA((Lx,Ly,Lz),(x0,y0,z0),fx,fy,fz):
-  regA = np.zeros( (Lx,Ly,Lz), dtype='bool' )
+#   regA = np.zeros( (Lx,Ly,Lz), dtype='bool' )
+#   
+#   for x in range(Lx):
+#     for y in range(Ly):
+#       for z in range(Lz):
+#         if (fx(x,x0) and fy(y,y0) and fz(z,z0)):
+#           regA[x,y,z] = True
+#         #endif
+#       #end for loop over z
+#     #end for loop over y
+#   # end for loop over x
+#   
+#   #if the size of region A is more than half of the lattice, swap regions A and B:
+#   if( (regA==True).sum() > (Lx*Ly*Lz/2.0) ): regA = np.logical_not(regA)
+  NTot=Lx*Ly*Lz
+  regA = np.zeros( NTot, dtype='bool' )
   
   for x in range(Lx):
     for y in range(Ly):
       for z in range(Lz):
         if (fx(x,x0) and fy(y,y0) and fz(z,z0)):
-          regA[x,y,z] = True
+          regA[site((Lx,Ly,Lz),x,y,z)] = True
         #endif
       #end for loop over z
     #end for loop over y
   # end for loop over x
   
   #if the size of region A is more than half of the lattice, swap regions A and B:
-  if( (regA==True).sum() > (Lx*Ly*Lz/2) ): regA = np.logical_not(regA)
+  if( (regA==True).sum() > (NTot/2.0) ): regA = np.logical_not(regA)
   
   return regA
 
