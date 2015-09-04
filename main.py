@@ -7,6 +7,9 @@ import time
 
 alphaEqTol=1e-10
 
+###############################################################################################
+##########################################  arrayEq  ##########################################
+###############################################################################################
 def arrayEq(a1, a2):
   eq = True
   
@@ -24,6 +27,9 @@ def arrayEq(a1, a2):
   return eq
 ####### end arrayEq(a1, a2) function #######
 
+###############################################################################################
+########################################  decimalStr  #########################################
+###############################################################################################
 def decimalStr(num):
   res = str(num)
   length = len(res)
@@ -33,12 +39,52 @@ def decimalStr(num):
   return res
 ####### end decimalStr(num) function #######
 
+###############################################################################################
+#########################################  readArray  #########################################
+###############################################################################################
 def readArray(line):
   start = max( 0, line.find('[') )
   end = min( len(line), line.find(']') )
   return line[start+1:end] 
 ####### end readArray(line) function #######
 
+###############################################################################################
+########################################  readParams  #########################################
+###############################################################################################
+# Input file should have the following form:
+#
+# order_min = ____ (integer)
+# order_max = ____ (integer)
+# massterm  = ____ (float)
+# alpha     = [ ___  ___  ___ ...] (list of floats in square brackets with items separated by spaces)
+#
+def readParams(filename):
+  filename = "input.txt"
+  order_min=1
+  order_max=1
+  massterm=1
+  alpha=[1]
+  if os.path.isfile(filename):
+    fin = open(filename,'r')
+    
+    line=fin.readline()
+    order_min = int(line[ max(0,line.find('='))+1:])
+    
+    line=fin.readline()
+    order_max = int(line[ max(0,line.find('='))+1:])
+    
+    line=fin.readline()
+    massterm = float(line[ max(0,line.find('='))+1:])
+    
+    line=fin.readline()
+    alpha = [float(a) for a in readArray(line).split()]
+    
+    fin.close()
+  return order_min,order_max,massterm,alpha
+
+###############################################################################################
+########################################  readWeights  ########################################
+###############################################################################################
 def readWeights(alpha, massterm):
   w={}
   filename = "weights_mass" + decimalStr(massterm) + ".txt"
@@ -75,21 +121,30 @@ def readWeights(alpha, massterm):
   return w
 ####### end readWeights(alpha, massterm) #######
 
-#############################
-# User settings
 
-order_min = 2
-order_max = 8
-order = clust_order.Max()
-massterm = 0.0
+###############################################################################################
+###########################################  main  ############################################
+###############################################################################################
+
+# User settings:
 #############################
+#Manual input:
+order_min = 2
+order_max = 4
+alpha=np.array( np.linspace(0.4,10,49).tolist() + [20,50,100,200,500,1000] )
+#alpha=np.array( [2.2, 2.4] )
+#alpha = np.array( [0.5, 1, 1.5, 2, 2.5, 3])
+massterm = 0.0
+
+#OR: read input from file:
+order_min,order_max,massterm,alpha = readParams("input.txt")
+#############################
+
+order = clust_order.Max()
 
 t1 = time.clock()
 
 clusters = []
-#alpha=np.array( np.linspace(0.4,10,49).tolist() + [20,50,100,200,500,1000] )
-alpha=np.array( [2.2] )
-#alpha = np.array( [0.5, 1, 1.5, 2, 2.5, 3])
 total = np.zeros(len(alpha))
 w = readWeights(alpha,massterm) #try to read in weights (if there are any stored)
 print "\nInitial weights:"
