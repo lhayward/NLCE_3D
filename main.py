@@ -128,15 +128,15 @@ def readWeights(alpha, massterm):
 
 # User settings:
 #############################
-#Manual input:
-order_min = 2
-order_max = 4
-alpha=np.array( np.linspace(0.4,10,49).tolist() + [20,50,100,200,500,1000] )
-#alpha=np.array( [2.2, 2.4] )
-#alpha = np.array( [0.5, 1, 1.5, 2, 2.5, 3])
-massterm = 0.0
+###Manual input:
+# order_min = 2
+# order_max = 4
+# alpha=np.array( np.linspace(0.4,10,49).tolist() + [20,50,100,200,500,1000] )
+# #alpha=np.array( [2.2, 2.4] )
+# #alpha = np.array( [0.5, 1, 1.5, 2, 2.5, 3])
+# massterm = 0.0
 
-#OR: read input from file:
+###OR: read input from file:
 order_min,order_max,massterm,alpha = readParams("input.txt")
 #############################
 

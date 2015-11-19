@@ -42,32 +42,90 @@ def getCornerEnt(Lx,Ly,Lz,alpha,massterm):
   
   #result=0
   result = np.zeros(len(alpha))
+#   #loop over all possible locations of the corner:
+#   for x0 in range(1,Lx):
+#     for y0 in range(1,Ly):
+#       for z0 in range(1,Lz):
+#         r0 = (x0,y0,z0)
+#         
+#         ################################# CORNER CONTRIBUTION #################################
+#         #corners:
+#         result += 1.0/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.geq),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.lt, cmp.geq),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.lt, cmp.lt ),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.geq,cmp.lt ),X,P))
+#         #result += getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.geq),X,P)
+#         
+#         #edges:
+#         result -= 1.0/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.any),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.lt ,cmp.any),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.geq),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt ,cmp.any,cmp.lt ),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.geq),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.lt ,cmp.lt ),X,P))
+#         #planes:
+#         result += 1.0/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.any),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.any),X,P)
+#                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.any,cmp.geq),X,P))
+#                          
+# #         ################################## EDGE CONTRIBUTION ##################################                         
+# #         result += 1.0/6.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.any),X,P)
+# #                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.lt ,cmp.any),X,P)
+# #                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.geq),X,P)
+# #                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt ,cmp.any,cmp.lt ),X,P)
+# #                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.geq),X,P)
+# #                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.lt ,cmp.lt ),X,P))
+# #         #planes:
+# #         result -= 1.0/3.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.any),X,P)
+# #                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.any),X,P)
+# #                          + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.any,cmp.geq),X,P))
+#       #loop over z0
+#     #loop over y0
+#   #loop over x0
+  
+  ################################# CORNER CONTRIBUTION #################################
   #loop over all possible locations of the corner:
+  #corners:
   for x0 in range(1,Lx):
     for y0 in range(1,Ly):
       for z0 in range(1,Lz):
         r0 = (x0,y0,z0)
-        #corners:
-        result += 1.0/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.geq),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.lt, cmp.geq),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.lt, cmp.lt ),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.geq,cmp.lt ),X,P))
-        #edges:
-        result -= 1.0/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.any),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt, cmp.lt ,cmp.any),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.geq),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.lt ,cmp.any,cmp.lt ),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.geq),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.lt ,cmp.lt ),X,P))
-        #planes:
-        result += 1.0/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.any),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.any),X,P)
-                         + getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.any,cmp.geq),X,P))
-      #loop over z0
-    #loop over y0
-  #loop over x0
+        result += getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.geq),X,P)
+  
+  #edges:
+  for x0 in range(1,Lx):
+    for y0 in range(1,Ly):
+      r0 = (x0,y0,1)
+      result -= (Lz-1)/2.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.geq,cmp.any),X,P))
+  for x0 in range(1,Lx):
+    for z0 in range(1,Lz):
+      r0 = (x0,1,z0)
+      result -= (Ly-1)/2.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.geq),X,P))
+  for y0 in range(1,Ly):
+    for z0 in range(1,Lz):
+      r0 = (1,y0,z0)
+      result -= (Lx-1)/2.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.geq),X,P))
+      
+  #planes:
+  for x0 in range(1,Lx):
+    r0 = (x0,1,1)
+    result += (Ly-1)*(Lz-1)/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.geq,cmp.any,cmp.any),X,P))
+  for y0 in range(1,Ly):
+    r0 = (1,y0,1)
+    result += (Lx-1)*(Lz-1)/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.geq,cmp.any),X,P))
+  for z0 in range(1,Lz):
+    r0 = (1,1,z0)
+    result += (Lx-1)*(Ly-1)/4.0*(getEntropy(L,alpha,getRegionA(L,r0,cmp.any,cmp.any,cmp.geq),X,P))
+  
   return result
 #.......................................END getCornerEnt.......................................
+
+def getEntPart1(regA,P,X):
+  sitesA = [i for i in range(len(regA)) if regA[i]]   
+  Pred = P[sitesA][:,sitesA]
+  Xred = X[sitesA][:,sitesA]
+  return Pred,Xred
+  
 
 ###############################################################################################
 ########################################  getEntropy  #########################################
@@ -93,6 +151,7 @@ def getEntropy((Lx,Ly,Lz),alpha,regA,X,P):
   sitesA = [i for i in range(len(regA)) if regA[i]]   
   Pred = P[sitesA][:,sitesA]
   Xred = X[sitesA][:,sitesA]
+  #Pred,Xred = getEntPart1(regA,P,X)
   
   #Csquared = Xred.dot(Pred)
   #Csquared = (Xred.T).dot(Pred)
